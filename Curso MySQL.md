@@ -121,6 +121,6 @@ Note:
    2. Click on 'Copy field (unquoted)'
    
 
-After this, we are able to paste the Query and see how that table is defined. It should look like this: [Table creation query](#Introduction)
+After this, we are able to paste the Query and see how that table is defined. It should look like this: [Table creation query]([Table creation query](##-Create-a-table))
 
 s.
