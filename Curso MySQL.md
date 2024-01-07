@@ -70,7 +70,7 @@ create database holamundo;
    use holamundo;
    ```
 
-   (2/2)
+   (2/2)	
 
 ```sql
 CREATE TABLE animales(
@@ -116,8 +116,11 @@ Note:
 > For this statement to work, it needs to be executed as a standalone query. That is, if our 'script' window has any other code lines, it won't work. We need to comment or delete all other statements.
 
 2. In 'result grid': 
-   1.  Right click on 'Create table'
-   2.  Click on 'Copy field (unquoted)'
+   1. Right click on 'Create table'
+   
+   2. Click on 'Copy field (unquoted)'
+   
 
-[Result](#Introduction)
+> After this, we are able to paste the Query and see how that table is defined. It should look like this: [Table creation query](#Create a table)
 
+s.
