@@ -449,6 +449,10 @@ Notice two things:
 1. **'u' entries are shown as many times as there are coincidences with 'p' entries.**
 2. **If there is no coincidence for a specific 'u' entry, there will be a NULL value in 'p' columns.**
 
+This can be read as follows:
+
+"Bring user entries and, if found, bring the associated products."
+
 ## Right join (Select)
 
 **"Bring all selected entries from right table (according to query condition) and bring left table's entries if and only if they are associated to a entry in right table."**  
@@ -457,7 +461,6 @@ Venn diagram:
 
 - Only partial blue entries (left) are brought to the selection.
 - All red entries (right) are brought to the selection.
-- No coincidences bring a NULL in blue selections (left).
 
 <svg width="200" height="150" xmlns="http://www.w3.org/2000/svg">
     <!-- Circle 1 with white outline -->
@@ -475,5 +478,235 @@ right join producto p
 on u.id = p.creado_por;
 ```
 
-s
+We would get:
 
+<table style="width: 70%; text-align: center; vertical-align: middle; border-collapse: collapse;">
+  <thead>
+    <tr>
+      <th width="33%">edad (left)</th>
+      <th width="33%">email (left)</th>
+       <th width="33%">nombre (right)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td> 25</td>
+      <td> oscar@gmail.com</td>
+      <td> macbook</td>
+    </tr>
+    <tr>
+      <td> 15</td>
+      <td> layla@gmail.com</td>
+      <td> ipadmini</td>
+    </tr>
+    <tr>
+      <td> 25</td>
+      <td> oscar@gmail.com</td>
+      <td> iphone</td>
+    </tr>
+    <tr>
+      <td> 36</td>
+      <td> nico@gmail.com</td>
+      <td> imac</td>
+    </tr>
+    <tr>
+      <td> 15</td>
+      <td> layla@gmail.com</td>
+      <td> watch</td>
+    </tr>
+  </tbody>
+</table>
+
+"Bring products entries and, if found, bring the associated users."
+
+Notice that the order of the rows changed compared to the 'left join' and there are no null values this time.
+
+## Inner join (Select)
+
+**"Bring selected entries both from left and right table (according to query condition) if and only if they are associated to each other."**  
+
+Venn diagram:
+
+- Only partial entries from both blue tables (left and right) are brought to the selection.
+- All coincidences (in red, at the middle) are brought to the selection.
+
+<svg width="200" height="150" xmlns="http://www.w3.org/2000/svg">
+    <!-- Circle 1 with white outline -->
+    <circle cx="50" cy="75" r="40" fill="#0D1117" stroke="white" stroke-width="1" opacity="1" />
+    <!-- Circle 2 -->
+    <circle cx="100" cy="75" r="40" fill="#0D1117" stroke="white" stroke-width="1" opacity="0.8" />
+    <!-- Intersection part -->
+    <ellipse cx="80" cy="70" rx="30" ry="15" fill="red" stroke="#A20000" stroke-width="1" opacity="0.8" transform="rotate(90 75 70)" />
+</svg>
+
+Using the sample tables created above:
+
+```sql
+select u.edad, u.email, p.nombre
+from usuario u
+inner join producto p
+on u.id = p.creado_por;
+```
+
+For this example, we would get the same output as right join, because all products are associated to a user.
+
+## Cross join (Select)
+
+**"Bring the cartesian product of selected tables"** (It doesn't have a condition to satisfy, unlike left and right join.)
+
+**WARNING:** Number of entries to be shown when using 'cross join' can be huge.
+
+For example, given this two tables,
+
+<div style="display: inline-block; margin-right: 20px;">
+    <table style="width: 100%; text-align: center; vertical-align: middle; border-collapse: collapse;">
+        <thead>
+            <tr>
+                <th>usuario</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>oscar</td>
+            </tr>
+            <tr>
+                <td>layla</td>
+            </tr>
+            <tr>
+                <td>nico</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div style="display: inline-block;">
+    <!-- Another table goes here -->
+    <table style="width: 100%; text-align: center; vertical-align: middle; border-collapse: collapse;">
+        <thead>
+            <tr>
+                <th>producto</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>mac</td>
+            </tr>
+            <tr>
+                <td>¡phone</td>
+            </tr>
+            <tr>
+                <td>watch</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+the cross join would be:
+
+<table style="width: 50%; text-align: center; vertical-align: middle; border-collapse: collapse;">
+    <thead>
+        <tr>
+            <th width="50%">usuario</th>
+            <th width="50%">producto</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>oscar</td>
+            <td>mac</td>
+        </tr>
+        <tr>
+            <td>layla</td>
+            <td>mac</td>
+        </tr>
+        <tr>
+            <td>nico</td>
+            <td>mac</td>
+        </tr>
+        <tr>
+            <td>oscar</td>
+            <td>iphone</td>
+        </tr>
+        <tr>
+            <td>layla</td>
+            <td>iphone</td>
+        </tr>
+        <tr>
+            <td>nico</td>
+            <td>iphone</td>
+        </tr>
+        <tr>
+            <td>oscar</td>
+            <td>watch</td>
+        </tr>
+        <tr>
+            <td>layla</td>
+            <td>watch</td>
+        </tr>
+        <tr>
+            <td>nico</td>
+            <td>watch</td>
+        </tr>
+    </tbody>
+</table>
+
+Using the sample tables created above:
+
+```sql
+select u.id, u.nombre, p.id, p.nombre from usuario u cross join producto p;
+```
+
+This will return the columns id-nombre-id-nombre in the form of the cartesian product between the 2 tables.
+
+## Group by  count.
+
+Scans data in a column and groups values in single records.
+
+**Example 1:**
+
+```sql
+select count(id), marca from producto group by marca;
+-- Counts the 'id's associated to each 'marca' value
+-- Returns as many records (groups) as there are distinct values in 'marca'
+```
+
+Using sample tables, it would return a single record, since all products were labeled as 'apple'.
+
+**Example 2:**
+
+```sql
+select count(p.id) as cant_marcas		 -- Counts the amount of product id's ...
+, u.nombre as propietario
+from producto p
+left join usuario u
+on u.id = p.creado_por					-- associated to each user id.
+group by p.creado_por;					-- and makes the grouping based on the user.
+
+-- ',' works as concatenation symbol to show the 'u.nombre' column
+```
+
+This would return the following table:
+
+<table style="width: 50%; text-align: center; vertical-align: middle; border-collapse: collapse;">
+    <thead>
+        <tr>
+            <th width="50%">cant_marcas</th>
+            <th width="50%">propietario</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>3</td>
+            <td>oscar</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>layla</td>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td>nico</td>
+        </tr>
+    </tbody>
+</table>
+
+s
