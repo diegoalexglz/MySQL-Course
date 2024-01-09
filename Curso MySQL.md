@@ -46,7 +46,7 @@ use holamundo;
 > Note: This is needed everytime MySQL Workbench is opened. Otherwise, error 'No database selected' will be showed in screen.
 >
 
-## Activate 'Schemas' view
+## Activate Schemas view
 
 To the far left of the screen, there's a 'navigator' tab with two options: 'Administration' and 'Schemas.' For the greater part of this course, 'Schemas' is the most useful, as it allows to see and modify created tables.
 
@@ -152,7 +152,7 @@ After this, we are able to paste the Query and see how that table is defined. It
 
 Note:
 
-> This can also be achieved via the 'Schemas' tab at the far left: right clicking on the table name, then 'Copy to clipboard' and finally 'Create Statement'. For more info, see: [Schemas](#Activate-'Schemas'-view)
+> This can also be achieved via the 'Schemas' tab at the far left: right clicking on the table name, then 'Copy to clipboard' and finally 'Create Statement'. For more info, see: [Schemas](#Activate-Schemas-view)
 
 ## List elements in a table (Select)
 
@@ -476,3 +476,4 @@ on u.id = p.creado_por;
 ```
 
 s
+
