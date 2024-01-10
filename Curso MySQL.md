@@ -671,7 +671,7 @@ select count(id), marca from producto group by marca;
 
 Using sample tables, it would return a single record, since all products were labeled as 'apple'.
 
-**Example 2:**
+**Example 2:** left join
 
 ```sql
 select count(p.id) as cant_marcas		 -- Counts the amount of product id's ...
@@ -709,4 +709,246 @@ This would return the following table:
     </tbody>
 </table>
 
-s
+**Example 3:** left join + comparative condition
+
+```sql
+select count(p.id) as cant_marcas
+, u.nombre as multipropietarios
+from producto p
+left join usuario u
+on u.id = p.creado_por
+group by p.creado_por
+having count(p.id) >= 2;
+
+-- Only shows records with a count equal or greater than 2.
+```
+
+This would return the following table:
+
+<table style="width: 50%; text-align: center; vertical-align: middle; border-collapse: collapse;">
+    <thead>
+        <tr>
+            <th width="50%">cant_marcas</th>
+            <th width="50%">multipropietarios</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>3</td>
+            <td>oscar</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>layla</td>
+        </tr>
+    </tbody>
+</table>
+
+# Drop table
+
+Deletes specified table.
+
+1. Write and execute:
+
+```sql
+drop table producto;
+```
+
+
+
+# Cardinality
+
+**1:N**
+
+This occurs when a 1st table's PK is used in a 2nd table as FK.
+For example:
+
+- 1st table
+  - PK:	id
+- 2nd table
+  - PK:	id
+  - FK:        created_by  --> points to user(id)
+
+<table style="width: 30%; text-align: center; vertical-align: middle; border-collapse: collapse;">
+    <thead>
+        <tr>
+            <th>user</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>id</td>
+        </tr>
+        <tr>
+            <td>...</td>
+        </tr>
+    </tbody>
+</table>
+
+<table style="width: 30%; text-align: center; vertical-align: middle; border-collapse: collapse;">
+    <thead>
+        <tr>
+            <th>product</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>id</td>
+        </tr>
+        <tr>
+            <td>created_by * user(id)</td>
+        </tr>
+        <tr>
+            <td>...</td>
+        </tr>
+    </tbody>
+</table>
+
+
+In this case, we say: "**A user can be linked to many products, but a product can only be linked to a single user"**
+
+**N:N**
+
+This occurs when:
+
+- 1:N conditions are met.
+- a 3rd table is created as intermediary, with which 1st and 2nd tables will have a 1:N cardinality. 
+
+For example:
+
+<table style="width: 30%; text-align: center; vertical-align: middle; border-collapse: collapse;">
+    <thead>
+        <tr>
+            <th>buy_order</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>id</td>
+        </tr>
+        <tr>
+            <td>...</td>
+        </tr>
+    </tbody>
+</table>
+
+<table style="width: 30%; text-align: center; vertical-align: middle; border-collapse: collapse;">
+    <thead>
+        <tr>
+            <th>product</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>id</td>
+        </tr>
+        <tr>
+            <td>created_by * buy_order(id)</td>
+        </tr>
+        <tr>
+            <td>...</td>
+        </tr>
+    </tbody>
+</table>
+
+Up until here, there's a 1:N cardenality between 'buy order' and 'products', but, if we create a 3rd table, it changes.
+
+<table style="width: 30%; text-align: center; vertical-align: middle; border-collapse: collapse;">
+    <thead>
+        <tr>
+            <th>order_detail</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>id</td>
+        </tr>
+        <tr>
+            <td>product_id * product(id)</td>
+        </tr>
+        <tr>
+            <td>order_id * buy_order(id)</td>
+        </tr>
+        <tr>
+            <td>...</td>
+        </tr>
+    </tbody>
+</table>
+
+Now, we have the following:
+
+- product	**1:N**	order_detail
+- buy_order    **1:N**       order_detail
+- product        **N:N**       buy_order
+
+
+
+# ER Models
+
+## Create a ER Model
+
+1. Click on the **'Home'** button, in the upper left corner.
+
+2. Click on the **'3 sheet'** symbol (button in the middle).
+
+3. Click on the **+** symbol, next to 'Models'.
+
+4. Click on **'add diagram'**, in 'model overview' section.
+
+   > Some templates will appear in a tab named 'modeling additions', in the right side.
+
+For this course, we'll use 'user' template.
+By double-clicking we can edit the table.
+Also, here we can create, modify and delete columns as we like.
+
+## Modify column characteristics
+
+PK	-	Primary Key
+NN	-	Not Null
+UQ	-	Unique
+B	   -	Binary (storage of images or documents)
+UN	-	Unsigned (non-negative values)
+ZF	 -	Zero Fill (fill with zeros the remaining width of the fields)
+AI	  -	Auto Increment
+G	  -	Generated (values are automatically calculated based on an expression or a function)
+
+## Get 'creation query' (from ER model)
+
+Here we can also get a creation query [Like this](#Create-a-table). following these steps:
+
+1. Right click on the table box.
+2. Click on 'Copy SQL to clipboard'
+
+## Set a column as Foreign Key
+
+1. At the bottom, there's a horizontal line with some options. Click on 'Foreign Keys'.
+
+2. Write the FK name (the same name with which it was created).
+
+3. Select which table it will refer to (referenced table)
+
+   > A line will be drawn starting from 2nd table (the one with the FK) towards the 1st table
+
+4. Select the column (of the 2nd table).
+
+5. Select the referenced column (of the 1st table)
+
+   > The diamond shape of the Foreign Key should now have a 'red' fill.
+
+## Set N:N cardinality between tables
+
+1. At the left of the 'diagram' window there's a vertical line with options. Click on 'n m' and arrow symbol.
+
+2. Select the 2 tables.
+
+   > A 3rd table should be generated.
+
+## Save ER Model as query
+
+1. Click on 'File'.
+2. Click on 'Export'.
+3. Click on 'Forward Engineer SQL Create Script'.
+4. Write file name.
+5. Set destination path.
+
+Again, should get something [Like this](#Create-a-table).
